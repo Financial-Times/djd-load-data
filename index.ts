@@ -5,8 +5,9 @@
  * Simple, Promise-based loader for common data filetypes
  */
 
+import 'isomorphic-fetch';
 import { compose, map } from 'ramda';
-import { csvFormat, csvParse, tsvParse, tsvParseRows } from 'd3-dsv';
+import { csvFormatRows, csvParse, tsvParse, tsvParseRows } from 'd3-dsv';
 
 export default function loadData(urls: string[]|string) {
   const urlsArr = urls instanceof Array ? urls : [urls];
@@ -15,12 +16,15 @@ export default function loadData(urls: string[]|string) {
     getFileExtension,
   ));
 
-  return Promise.all(process(urlsArr));
+  return Promise.all(process(urlsArr)).then((results) => {
+    if (results.length === 1) return results[0];
+    else return results;
+  });
 }
 
 function getFileExtension(filename: string) {
   const frags = filename.split('.');
-  const ext = frags[frags.length];
+  const ext = frags[frags.length - 1];
   return [filename, ext];
 }
 
@@ -55,14 +59,15 @@ function atsvParse(data: string) {
     if (cur[0].indexOf('&') === 0 &&
         cur.filter(i => i === '').length === numCols - 1) {
       const [key, value] = cur[0].slice(1).split('=');
-      acc[key] = value;
+      acc[key.trim()] = value.trim();
     }
     return acc;
   }, {});
 
   if (rows[0][0] === '&') rows[0][0] = 'date';
-  const filtered = rows.filter(row => row[0][0].indexOf('&') === -1);
-  const parsed = csvParse(csvFormat(filtered));
+  const filtered = rows.filter(row => row[0].indexOf('&') === -1);
+  const parsed = csvParse(csvFormatRows(filtered));
+
   return {
     meta,
     data: parsed,

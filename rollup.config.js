@@ -26,7 +26,6 @@ export default [
     external: [
       'ramda',
       'd3-dsv',
-      'isomorphic-fetch',
     ],
     plugins: [
       typescript(),
