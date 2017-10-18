@@ -1,0 +1,41 @@
+{
+  "name": "@financial-times/load-data",
+  "version": "1.0.0",
+  "description": "A general-purpose multi-data loader",
+  "browser": "dist/loadData.dist.js",
+  "main": "dist/loadData.cjs.js",
+  "module": "dist/loadData.module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c rollup.config.js"
+  },
+  "keywords": [
+    "fetch",
+    "data",
+    "csv",
+    "tsv",
+    "annotated TSV",
+    "atsv"
+  ],
+  "author": "Ændrew Rininsland <andrew.rininsland@ft.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.43",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "rollup": "^0.50.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.7.0",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
+    "tslint-config-airbnb": "^5.3.0",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "@types/d3-dsv": "^1.0.30",
+    "@types/ramda": "^0.24.17",
+    "d3-dsv": "^1.0.7",
+    "ramda": "^0.25.0"
+  }
+}
