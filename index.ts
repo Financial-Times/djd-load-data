@@ -10,16 +10,12 @@ import { compose, map } from 'ramda';
 import { csvFormatRows, csvParse, tsvParse, tsvParseRows } from 'd3-dsv';
 
 export default function loadData(urls: string[]|string) {
-  const urlsArr = urls instanceof Array ? urls : [urls];
-  const process = map(compose(
+  return Promise.all(map(compose(
     fetchParseData,
     getFileExtension,
-  ));
-
-  return Promise.all(process(urlsArr)).then((results) => {
-    if (results.length === 1) return results[0];
-    else return results;
-  });
+  ))(urls instanceof Array ? urls : [urls]))
+  .then(results =>
+    results.length === 1 ? results[0] : results);
 }
 
 function getFileExtension(filename: string) {
