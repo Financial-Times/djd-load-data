@@ -20,18 +20,14 @@ export default function loadData(urls: string[]|string) {
 }
 
 /**
- * Get extension by splitting on dot, taking last element in array
- * @param  {string} Filename   - File to get extension for
- * @return {string}            - File's extension
- */
-const getExt = R.compose(R.last, R.split('.'));
-
-/**
  * Get extension, return array containing filename and extension
  * @param  {string} filename - File path or URL
  * @return {string[]}        - Array containing full file path and its extension
  */
-const getFileExtension = (filename: string) => [filename, getExt(filename)];
+const getFileExtension = R.converge(Array, [
+  R.identity,
+  R.compose(R.last, R.split('.')),
+]);
 
 /**
  * Fetch and parse an array of file paths/URIs
@@ -83,15 +79,20 @@ async function fetchParseData([url, ext]: [string, string]) {
 
 /**
  * Returns whether a TSV is annotated
- * @TODO Is there a way to make this more zero-point?
  * @param  {string} data  - TSV as unparsed string
  * @return {boolean}      - Whether TSV has annotations denoted by '&'
  */
-function isAnnotated(data: string) {
-  const emptyEls = R.compose(R.length, R.filter(R.isEmpty), R.last, tsvParseRows);
-  const excludeFirstEl = R.compose(R.length, R.tail, R.last, tsvParseRows);
-  return R.equals(emptyEls(data), excludeFirstEl(data));
-}
+const isAnnotated = R.compose(
+  R.converge(
+    R.eqBy(R.length),
+    [
+      R.filter(R.isEmpty),
+      R.tail
+    ]
+  ),
+  R.last,
+  tsvParseRows
+);
 
 /**
  * Parse an annotated TSV into data and annotations
