@@ -43,7 +43,7 @@
   "dependencies": {
     "@types/d3-dsv": "^1.0.30",
     "@types/isomorphic-fetch": "0.0.34",
-    "@types/ramda": "^0.24.17",
+    "@types/ramda": "github:types/npm-ramda#dist",
     "d3-dsv": "^1.0.7",
     "isomorphic-fetch": "^2.2.1",
     "ramda": "^0.25.0"
