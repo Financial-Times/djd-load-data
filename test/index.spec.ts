@@ -16,6 +16,7 @@ const server = new StaticServer({
 
 chai.use(chaiAsPromised);
 chai.should();
+const { expect } = chai;
 
 const result = require(resolve(__dirname, 'fixtures', 'test.json'));
 
@@ -79,7 +80,7 @@ describe('default export', () => {
   });
   describe('parsing unrecognised format', () => {
     it('throws', () => {
-      return loadData(`${webroot}/herpa-derpa.nope`).should.be.rejected;
+      expect(() => loadData(`${webroot}/herpa-derpa.nope`)).to.throw();
     });
   });
 });
