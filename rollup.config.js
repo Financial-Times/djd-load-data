@@ -13,7 +13,7 @@ export default [
     },
     context: undefined,
     moduleContext: {
-      [require.resolve('whatwg-fetch')]: 'window'
+      [require.resolve('isomorphic-fetch')]: 'window'
     },
     plugins: [
       resolve(),
