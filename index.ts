@@ -90,21 +90,17 @@ const isAnnotated = R.compose(
   tsvParseRows,
 );
 
-const getMeta = (arr: string[][]) => arr.reduce((acc, cur) => {
-  if (cur[0].indexOf('&') === 0 && cur[0].length > 1) {
-    const [key, value] = cur[0].slice(1).split('=');
-    acc[key.trim()] = value.trim();
-  }
-  return acc;
-}, <{[key: string]: string}>{});
-
-
-// R.reduce((acc: any, cur: string[]) => {
-//   R.when(
-//     R.compose(R.equals(0), R.indexOf('&'), R.head),
-//     R.compose(R.map(R.trim), R.split('='), R.slice(1, Infinity), R.head))
-//   )(cur);
-// }
+/**
+ * Creates a meta object from annotated TSV comments
+ * @param {string[][]} - Parsed TSV rows
+ * @return {Object}    - Extracted metadata
+ */
+const getMeta = R.compose(
+  R.fromPairs,
+  R.map(R.compose(R.split('='), R.tail)),
+  R.filter(R.compose(R.gt(R.__, -1), R.indexOf('='))),
+  R.map(R.head),
+);
 
 /**
  * Parse an annotated TSV into data and annotations
@@ -116,7 +112,6 @@ const getMeta = (arr: string[][]) => arr.reduce((acc, cur) => {
  */
 function atsvParse(data: string) {
   const rows = tsvParseRows(data);
-  const numCols = rows[0].length;
   const meta = getMeta(rows);
 
   if (rows[0][0] === '&') rows[0][0] = 'date';
