@@ -13,7 +13,7 @@ export default [
     },
     context: undefined,
     moduleContext: {
-      [require.resolve('isomorphic-fetch')]: 'window'
+      [require.resolve('fetch-ponyfill')]: 'window'
     },
     plugins: [
       resolve(),

@@ -5,7 +5,7 @@
  * Simple, Promise-based loader for common data filetypes
  */
 
-import 'isomorphic-fetch';
+import 'fetch-ponyfill';
 import * as R from 'ramda';
 import { csvFormatRows, csvParse, tsvParse, tsvParseRows } from 'd3-dsv';
 
