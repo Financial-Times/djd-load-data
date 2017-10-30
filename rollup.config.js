@@ -1,6 +1,8 @@
 import uglify from 'rollup-plugin-uglify';
 import typescript from 'rollup-plugin-typescript2';
 import resolve from 'rollup-plugin-node-resolve';
+import cjs from 'rollup-plugin-commonjs';
+import json from 'rollup-plugin-json';
 
 export default [
   // UMD bundle for web...
@@ -12,11 +14,12 @@ export default [
         name: 'loadData',
     },
     context: 'window',
-    moduleContext: {
-      [require.resolve('isomorphic-fetch')]: 'window'
-    },
     plugins: [
-      resolve(),
+      resolve({
+        browser: true,
+      }),
+      cjs(),
+      json(),
       typescript({
         tsconfigOverride: {
           compilerOptions: {
@@ -37,7 +40,7 @@ export default [
     external: [
       'ramda',
       'd3-dsv',
-      'isomorphic-fetch',
+      'axios',
     ],
     plugins: [
       typescript(),
@@ -53,7 +56,7 @@ export default [
     external: [
       'ramda',
       'd3-dsv',
-      'isomorphic-fetch',
+      'axios',
     ],
     plugins: [
       typescript(),

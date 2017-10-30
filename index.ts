@@ -5,9 +5,9 @@
  * Simple, Promise-based loader for common data filetypes
  */
 
-import 'isomorphic-fetch';
 import * as R from 'ramda';
 import { csvFormatRows, csvParse, tsvParse, tsvParseRows } from 'd3-dsv';
+import axios from 'axios';
 
 /**
  * Take either single or multiple URIs; parse; return as single promise.
@@ -37,15 +37,15 @@ const getFileExtension = R.converge(Array, [
  * @return {Promise<Object|Array>}   -  Promise resolving to parsed data
  */
 const fetchParseData = ([url, ext]: [string, string]) => R.cond([
-  [R.equals('json'), async () => (await fetch(url)).json()],
-  [R.equals('csv'), async () => csvParse(await (await fetch(url)).text())],
+  [R.equals('json'), async () => (await axios(url)).data],
+  [R.equals('csv'), async () => csvParse((await axios(url)).data)],
   [R.equals('tsv'), async () => {
-    const data = await (await fetch(url)).text();
+    const { data } = await axios(url);
     if (!isAnnotated(data)) return tsvParse(data);
     else return atsvParse(data);
   }],
   [R.either(R.equals('atsv'), R.equals('txt')), async () =>
-    atsvParse(await (await fetch(url)).text())],
+    atsvParse((await axios(url)).data)],
   [R.T, () => {
     throw new Error('Unrecognised file extension');
   }],
