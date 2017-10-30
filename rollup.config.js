@@ -11,7 +11,7 @@ export default [
         format: 'umd',
         name: 'loadData',
     },
-    context: undefined,
+    context: 'window',
     moduleContext: {
       [require.resolve('isomorphic-fetch')]: 'window'
     },
