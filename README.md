@@ -9,6 +9,7 @@ $ npm install @financial-times/load-data --save
 
 ### Usage:
 
+
 #### TypeScript/ES6:
 
 ```javascript
