@@ -42,7 +42,10 @@ const getExtIfBlob = R.cond([
       R.compose(R.startsWith('blob:'), R.view(R.lensProp('url'))),
       R.compose(R.equals('Object'), R.type),
     ),
-    (blob: BlobType) => ([blob.url, getFileExtension(blob.name)[1]]), // @TODO Yuck
+    R.converge(R.append, [
+      R.prop('url'),
+      R.compose(R.of, R.last, getFileExtension, R.prop('name')),
+    ]),
   ],
   [
     R.T,
