@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@types/d3-dsv": "^1.0.30",
-    "@types/ramda": "github:types/npm-ramda#dist",
+    "@types/ramda": "github:types/npm-ramda#b3da85f3c7e06cd8561e13a3edb98d9d0b9c07f4",
     "axios": "^0.17.0",
     "d3-dsv": "^1.0.7",
     "ramda": "^0.25.0",

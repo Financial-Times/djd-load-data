@@ -74,7 +74,7 @@ const fetchParseData = ([url, ext]: [string, string]) => R.cond([
     async () => {
       const { data } = await axios(url);
       if (!isAnnotated(data)) return tsvParse(data);
-      else return atsvParse(data);
+      return atsvParse(data);
     },
   ],
   [
