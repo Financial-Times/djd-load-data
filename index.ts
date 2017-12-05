@@ -39,7 +39,7 @@ const getFileExtension = R.converge(Array, [
 const getExtIfBlob = R.cond([
   [
     R.and(
-      R.compose(R.startsWith('blob:'), R.view(R.lensProp('url'))),
+      R.compose(R.startsWith('blob:'), R.view(R.lensProp('preview'))),
       R.compose(R.equals('Object'), R.type),
     ),
     R.converge(R.append, [
