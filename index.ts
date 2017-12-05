@@ -15,8 +15,10 @@ import axios from 'axios';
  * @return {Promise}                - Promise resolving to parsed data
  */
 export default function loadData(urls: string[]|string) {
-  return Promise.all(parseFilesBasedOnExt(makeStringIntoArray(urls)))
-    .then(returnObjectIfLengthIsOne);
+  return Promise.all(
+    parseFilesBasedOnExt(makeStringIntoArray(urls)), // @TODO Something feels off about this.
+  )
+  .then(returnObjectIfLengthIsOne);
 }
 
 /**
@@ -30,6 +32,25 @@ const getFileExtension = R.converge(Array, [
 ]);
 
 /**
+ * Extract the URL and filename from the blob
+ * @param  {'}      [[R.and(R.compose(R.startsWith('blob [description]
+ * @return {[type]}                                      [description]
+ */
+const getExtIfBlob = R.cond([
+  [
+    R.and(
+      R.compose(R.startsWith('blob:'), R.view(R.lensProp('url'))),
+      R.compose(R.equals('Object'), R.type),
+    ),
+    (blob: BlobType) => ([blob.url, getFileExtension(blob.name)[1]]), // @TODO Yuck
+  ],
+  [
+    R.T,
+    getFileExtension,
+  ],
+]);
+
+/**
  * Fetch data and parse based on ext.
  * @param  {string[]} fileData       -  Info about the file to consume
  * @param  {string}  fileData[0]     -  URL to fetch
@@ -37,15 +58,26 @@ const getFileExtension = R.converge(Array, [
  * @return {Promise<Object|Array>}   -  Promise resolving to parsed data
  */
 const fetchParseData = ([url, ext]: [string, string]) => R.cond([
-  [R.equals('json'), async () => (await axios(url)).data],
-  [R.equals('csv'), async () => csvParse((await axios(url)).data)],
-  [R.equals('tsv'), async () => {
-    const { data } = await axios(url);
-    if (!isAnnotated(data)) return tsvParse(data);
-    else return atsvParse(data);
-  }],
-  [R.either(R.equals('atsv'), R.equals('txt')), async () =>
-    atsvParse((await axios(url)).data)],
+  [
+    R.equals('json'),
+    async () => (await axios(url)).data,
+  ],
+  [
+    R.equals('csv'),
+    async () => csvParse((await axios(url)).data),
+  ],
+  [
+    R.equals('tsv'),
+    async () => {
+      const { data } = await axios(url);
+      if (!isAnnotated(data)) return tsvParse(data);
+      else return atsvParse(data);
+    },
+  ],
+  [
+    R.either(R.equals('atsv'), R.equals('txt')),
+    async () => atsvParse((await axios(url)).data),
+  ],
   [R.T, () => {
     throw new Error('Unrecognised file extension');
   }],
@@ -56,7 +88,7 @@ const fetchParseData = ([url, ext]: [string, string]) => R.cond([
  * @param  {string[]} URIs  - Fully-qualified file URIs
  * @return {Promise[]}      - Array of promises resolving to data
  */
-const parseFilesBasedOnExt = R.map(R.compose(fetchParseData, getFileExtension));
+const parseFilesBasedOnExt = R.map(R.compose(fetchParseData, getExtIfBlob));
 
 /**
  * If a string is provided, wrap in array and return.
@@ -123,3 +155,8 @@ function atsvParse(data: string) {
     data: parsed,
   };
 }
+
+type BlobType = {
+  url: string;
+  name: string;
+};
