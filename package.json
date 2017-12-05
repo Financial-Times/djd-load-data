@@ -1,6 +1,6 @@
 {
   "name": "@financial-times/load-data",
-  "version": "0.0.0",
+  "version": "1.0.7",
   "description": "A general-purpose multi-data loader",
   "browser": "dist/loadData.dist.min.js",
   "main": "dist/loadData.cjs.js",
@@ -36,6 +36,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript2": "^0.7.0",
     "rollup-plugin-uglify": "^2.0.1",
+    "semantic-release": "^8.2.0",
     "source-map-support": "^0.5.0",
     "static-server": "^2.0.5",
     "ts-node": "^3.3.0",

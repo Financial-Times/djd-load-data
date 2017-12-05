@@ -7,14 +7,14 @@ dependencies:
 test:
   post:
     - bash <(curl -s https://codecov.io/bash)
-deployment:
-  release:
-    tag: /v.*/
-    owner: ft-interactive
-    commands:
-      - npm run build
-      - npm-prepublish --verbose
-      - npm publish --access public
+# deployment: # Disabled because npm-prepublish is flaky AF.
+  # release:
+  #   tag: /v.*/
+  #   owner: ft-interactive
+  #   commands:
+  #     - npm run build
+  #     - npm-prepublish --verbose
+  #     - npm publish --access public
 general:
   artifacts:
     - coverage
