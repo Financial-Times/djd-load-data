@@ -5,8 +5,10 @@
 
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
+import { readFileSync } from 'fs';
 import loadData from '../index'; // tslint:disable-line
 import { resolve } from 'path';
+import * as moxios from 'moxios';
 
 const StaticServer = require('static-server'); // tslint:disable-line
 const server = new StaticServer({
@@ -78,9 +80,64 @@ describe('default export', () => {
       ]);
     });
   });
+
   describe('parsing unrecognised format', () => {
     it('throws', () => {
       expect(() => loadData(`${webroot}/herpa-derpa.nope`)).to.throw();
+    });
+  });
+
+  describe('blob parsing', () => {
+    beforeEach(() => {
+      moxios.install();
+    });
+
+    afterEach(() => {
+      moxios.uninstall();
+    });
+
+    it('can parse a blob!', () => {
+      const blob = {
+        preview: 'blob://localhost:3000/b3da85f3c7e06cd8561e13a3edb98d9d0b9c07f4',
+        name: 'hurr.json',
+      };
+
+      moxios.stubRequest('blob://localhost:3000/b3da85f3c7e06cd8561e13a3edb98d9d0b9c07f4', {
+        status: 200,
+        responseText: JSON.stringify(result),
+      });
+
+      loadData(blob).should.eventually.eql(result);
+    });
+
+    it('can parse an array of blobs!', () => {
+      const blobs = [
+        {
+          preview: 'blob://localhost:3000/b3da85f3c7e06cd8561e13a3edb98d9d0b9c07f4',
+          name: 'hurr.json',
+        },
+        {
+          preview: 'blob://localhost:3000/abcd1234',
+          name: 'test.csv',
+        },
+      ];
+
+      const csvFixtureString = readFileSync(resolve(__dirname, 'fixtures', 'test.csv'), 'utf-8');
+
+      moxios.stubRequest('blob://localhost:3000/b3da85f3c7e06cd8561e13a3edb98d9d0b9c07f4', {
+        status: 200,
+        responseText: JSON.stringify(result),
+      });
+
+      moxios.stubRequest('', {
+        status: 200,
+        responseText: csvFixtureString,
+      });
+
+      loadData(blobs).should.eventually.eql([
+        result,
+        result,
+      ]);
     });
   });
 });

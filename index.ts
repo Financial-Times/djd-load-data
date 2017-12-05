@@ -14,7 +14,7 @@ import axios from 'axios';
  * @param  {string[]|string} urls   - One or more URIs
  * @return {Promise}                - Promise resolving to parsed data
  */
-export default function loadData(urls: string[]|string) {
+export default function loadData(urls: string[]|string|BlobType|BlobType[]) {
   return Promise.all(
     parseFilesBasedOnExt(makeStringIntoArray(urls)), // @TODO Something feels off about this.
   )
@@ -33,8 +33,6 @@ const getFileExtension = R.converge(Array, [
 
 /**
  * Extract the URL and filename from the blob
- * @param  {'}      [[R.and(R.compose(R.startsWith('blob [description]
- * @return {[type]}                                      [description]
  */
 const getExtIfBlob = R.cond([
   [
@@ -43,8 +41,8 @@ const getExtIfBlob = R.cond([
       R.compose(R.equals('Object'), R.type),
     ),
     R.converge(R.append, [
-      R.prop('url'),
-      R.compose(R.of, R.last, getFileExtension, R.prop('name')),
+      R.compose(R.last, getFileExtension, R.prop('name')),
+      R.compose(R.of, R.prop('preview')),
     ]),
   ],
   [
@@ -84,7 +82,7 @@ const fetchParseData = ([url, ext]: [string, string]) => R.cond([
   [R.T, () => {
     throw new Error('Unrecognised file extension');
   }],
-])(ext);
+])(ext); // @TODO 😒
 
 /**
  * Fetch and parse an array of file paths/URIs
@@ -160,6 +158,6 @@ function atsvParse(data: string) {
 }
 
 type BlobType = {
-  url: string;
+  preview: string;
   name: string;
 };
