@@ -1,6 +1,6 @@
 {
   "name": "@financial-times/load-data",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A general-purpose multi-data loader",
   "browser": "dist/loadData.dist.min.js",
   "main": "dist/loadData.cjs.js",
