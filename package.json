@@ -5,6 +5,7 @@
   "browser": "dist/loadData.dist.min.js",
   "main": "dist/loadData.cjs.js",
   "module": "dist/loadData.module.js",
+  "repository": "ssh://git@github.com/financial-times/djd-load-data",
   "scripts": {
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' nyc mocha",
     "build": "rollup -c rollup.config.js"
