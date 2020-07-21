@@ -28,7 +28,7 @@
     "@types/node": "^8.0.44",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "codecov": "^2.3.1",
+    "codecov": "^3.7.1",
     "mocha": "^4.0.1",
     "moxios": "^0.4.0",
     "npm-prepublish": "^1.2.3",
